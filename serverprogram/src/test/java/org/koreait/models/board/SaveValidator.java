@@ -3,7 +3,9 @@ package org.koreait.models.board;
 import org.koreait.controllers.board.DataForm;
 import org.koreait.validators.RequiredValidator;
 import org.koreait.validators.Validator;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SaveValidator implements Validator<DataForm>, RequiredValidator {
     @Override
     public void check(DataForm dataForm) {

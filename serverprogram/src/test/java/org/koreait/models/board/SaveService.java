@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 public class SaveService {//저장 기능
 
     private final SaveValidator svalidator;
-    public void save(DataForm df){
+    private final BoardDataDao dataDao;
+    public void save(DataForm df){//사용자가 입력한 정보가 검증이 완료되면 데이터 저장
+        svalidator.check(df);
 
+        dataDao.save(df);
     }
 }
