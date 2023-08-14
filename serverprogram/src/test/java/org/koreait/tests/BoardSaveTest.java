@@ -9,15 +9,24 @@ import org.koreait.models.board.BoardValidationException;
 import org.koreait.models.board.InfoService;
 import org.koreait.models.board.SaveService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 @DisplayName("WholeTest_BoardSaveService")
 public class BoardSaveTest {
 
+    @Autowired//스프링부트테스트는 autowired사용
+    private MockMvc mockMvc;//배포전 기능전체동작 테스트
     @Autowired
     private InfoService infoService;
     @Autowired
@@ -107,6 +116,34 @@ public class BoardSaveTest {
         });
         assertTrue(thrown.getMessage().contains(message)); //조건이 성공이면 true
     }
+
+    
+    //통합테스트 : mockMvc를 사용하여 기능별 테스트완료후 전체 테스트 진행
+    @Test
+    @DisplayName("(전체)기능 성공시 게시글 저장 페이지 이동")
+    void saveSuccessControllerTest() throws Exception {
+        mockMvc.perform(post("/board/save")
+                        .param("poster", boardData.getPoster())
+                        .param("subject", boardData.getSubject())
+                        .param("content", boardData.getContent()))
+                .andExpect(status().is(302))
+                .andExpect(header().exists("Location"));
+    }
+
+    /*@Test
+    @DisplayName("Bean Validation 검증 및 정확한 내용 포함여부")
+    void requiredFieldControllerTest() throws Exception {
+        String body = mockMvc.perform(post("/board/save"))
+                .andDo(print())
+                .andReturn().getResponse().getContentAsString(); // Body 데이터
+
+        assertAll(
+                ()-> assertTrue(body.contains("작성자 필수 입력.")),
+                ()-> assertTrue(body.contains("제목 필수 입력.")),
+                ()-> assertTrue(body.contains("내용 필수 입력."))
+        );
+
+    }*/
 
 
 }
