@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.koreait.controllers.board.DataForm;
 import org.koreait.models.board.BoardData;
+import org.koreait.models.board.BoardValidationException;
 import org.koreait.models.board.InfoService;
 import org.koreait.models.board.SaveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,57 @@ public class BoardSaveTest {
                 () -> assertEquals(boardData.getSubject(), result.getSubject()),
                 () -> assertEquals(boardData.getContent(), result.getContent())
         );
+    }
+
+    @Test
+    @DisplayName("필수검증(poster,subject,content), null or 공백시 BoardValidationException")
+    void requiredFieldsTest() {
+
+        assertAll(//전체를 테스트 하여 오류 발생해도 멈추지 않고 전체 오류 탐색을 위해..assertAll
+                () -> {
+                    // poster가 null
+                    boardData = getData();
+                    boardData.setPoster(null);
+                    requiredFieldTestEach(boardData, "작성자");
+                },
+                () -> {
+                    // poster가 빈값
+                    boardData = getData();
+                    boardData.setPoster("     ");
+                    requiredFieldTestEach(boardData, "작성자");
+                },
+                () -> {
+                    // subject가 null
+                    boardData = getData();
+                    boardData.setSubject(null);
+                    requiredFieldTestEach(boardData, "제목");
+                },
+                () -> {
+                    // subject가 빈값
+                    boardData = getData();
+                    boardData.setSubject("     ");
+                    requiredFieldTestEach(boardData, "제목");
+                },
+                () -> {
+                    // content가 null
+                    boardData = getData();
+                    boardData.setContent(null);
+                    requiredFieldTestEach(boardData, "내용");
+                },
+                () -> {
+                    // content가 빈값
+                    boardData = getData();
+                    boardData.setContent("    ");
+                    requiredFieldTestEach(boardData, "내용");
+                }
+        );
+    }
+
+    private void requiredFieldTestEach(DataForm data, String message) {
+        BoardValidationException thrown = assertThrows(BoardValidationException.class, () -> {
+            saveService.save(data);//예상한 에러가 발생하면 true
+        });
+        assertTrue(thrown.getMessage().contains(message)); //조건이 성공이면 true
     }
 
 
