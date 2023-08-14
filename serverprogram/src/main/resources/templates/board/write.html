@@ -1,10 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
 
-</body>
+<main layout:fragment="content">
+    <form method="post" th:action="@{/board/save}" th:object="${DataForm}">
+        <div th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        <dl>
+            <dt>Title</dt>
+            <dd>
+                <input type="text" name="subject" th:field="*{subject}">
+                <div th:each="err : ${#fields.errors('subject')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>Content</dt>
+            <dd>
+                <textarea name="content" th:field="*{content}"></textarea>
+                <div th:each="err : ${#fields.errors('content')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>Poster</dt>
+            <dd>
+                <input type="text" name="poster" th:field="*{poster}">
+                <div th:each="err : ${#fields.errors('poster')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+        <button type="submit">Add board</button>
+    </form>
+</main>
 </html>

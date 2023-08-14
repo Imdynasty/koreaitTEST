@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<main layout:fragment="content">
+    <th:block th:object="${data}"><%--model로 넘긴것-->
+        <dl>
+            <dt>Title</dt>
+            <dd th:text="*{subject}"></dd>
+        </dl>
+        <dl>
+            <dt>Content</dt>
+            <dd th:text="*{content}"></dd>
+        </dl>
+        <dl>
+            <dt>Poster</dt>
+            <dd th:text="*{poster}"></dd>
+        </dl>
+        <a th:href="@{/board/write}">Add</a>
+        <a th:href="@{/board/delete/{id}(id=*{id})}">Delete</a>
+        <a th:href="@{/board/list}">Contents</a>
+    </th:block>
+</main>
+</html>
+
+
+</main>
+</html>
